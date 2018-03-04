@@ -1,0 +1,27 @@
+.navbar-light {
+  background: #fff;
+  box-shadow: 0 1px 2px 0 rgba(0, 0, 0, 0.2);
+}
+
+.content {
+  padding-top: 1px;
+  height: calc(100% - 56px); /** 100% - nav bar height **/
+  background-color: #fafafa;
+  /*overflow-y: scroll;*/
+  display: flex;
+}
+
+.content > * {
+  flex-basis: 50%;
+  flex-grow: 0;
+  flex-shrink: 0;
+  max-width: 50%;
+}
+
+
+#playground {
+  width: 200px;
+  height: 70px;
+  background-color: yellowgreen;
+  overflow: hidden;
+}

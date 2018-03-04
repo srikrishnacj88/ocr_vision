@@ -1,0 +1,32 @@
+/* You can add global styles to this file, and also import other style files */
+
+html, body, app-root, .fh {
+  height:100%;
+}
+
+.Aligner {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.Aligner-item {
+}
+
+fw {
+  width:100%;
+  max-width:100%;
+}
+
+
+.hide {
+  display:none;
+}
+
+.overflow-scroll {
+  overflow: scroll;
+}
+
+.drop-container img, .results .konvajs-content{
+    transform-origin: top left;
+}

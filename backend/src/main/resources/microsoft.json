@@ -1,0 +1,821 @@
+{
+  "textAngle": 0.0,
+  "orientation": "NotDetected",
+  "language": "en",
+  "regions": [
+    {
+      "boundingBox": "755,225,1555,424",
+      "lines": [
+        {
+          "boundingBox": "2168,225,142,61",
+          "words": [
+            {
+              "boundingBox": "2168,225,142,61",
+              "text": "-Sell"
+            }
+          ]
+        },
+        {
+          "boundingBox": "852,548,559,55",
+          "words": [
+            {
+              "boundingBox": "852,549,238,44",
+              "text": "FORM-B"
+            },
+            {
+              "boundingBox": "1116,548,295,55",
+              "text": "(CENTRAL)"
+            }
+          ]
+        },
+        {
+          "boundingBox": "755,608,779,41",
+          "words": [
+            {
+              "boundingBox": "755,608,86,41",
+              "text": "(See"
+            },
+            {
+              "boundingBox": "855,608,67,35",
+              "text": "sub"
+            },
+            {
+              "boundingBox": "940,609,196,40",
+              "text": "paragraph"
+            },
+            {
+              "boundingBox": "1154,608,57,41",
+              "text": "(3)"
+            },
+            {
+              "boundingBox": "1226,609,38,34",
+              "text": "of"
+            },
+            {
+              "boundingBox": "1279,609,196,40",
+              "text": "par\"raph"
+            },
+            {
+              "boundingBox": "1493,609,41,40",
+              "text": "4)"
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "boundingBox": "698,656,902,34",
+      "lines": [
+        {
+          "boundingBox": "698,656,902,34",
+          "words": [
+            {
+              "boundingBox": "698,656,164,34",
+              "text": "PUBLIC"
+            },
+            {
+              "boundingBox": "874,658,262,32",
+              "text": "PROVIDENT"
+            },
+            {
+              "boundingBox": "1152,658,118,32",
+              "text": "FUND"
+            },
+            {
+              "boundingBox": "1282,658,180,32",
+              "text": "SCHEME"
+            },
+            {
+              "boundingBox": "1492,658,108,32",
+              "text": "1968"
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "boundingBox": "1721,350,366,605",
+      "lines": [
+        {
+          "boundingBox": "1721,350,366,59",
+          "words": [
+            {
+              "boundingBox": "1721,350,366,59",
+              "text": "cnßsok36s"
+            }
+          ]
+        },
+        {
+          "boundingBox": "1737,898,327,57",
+          "words": [
+            {
+              "boundingBox": "1737,898,84,57",
+              "text": "25/"
+            },
+            {
+              "boundingBox": "1850,901,51,38",
+              "text": "02"
+            },
+            {
+              "boundingBox": "2011,901,53,39",
+              "text": "18"
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "boundingBox": "333,910,556,227",
+      "lines": [
+        {
+          "boundingBox": "333,910,484,38",
+          "words": [
+            {
+              "boundingBox": "333,910,80,38",
+              "text": "SBI"
+            },
+            {
+              "boundingBox": "434,910,194,38",
+              "text": "BRANCH"
+            },
+            {
+              "boundingBox": "648,910,133,38",
+              "text": "NAME"
+            },
+            {
+              "boundingBox": "806,920,11,28",
+              "text": ":"
+            }
+          ]
+        },
+        {
+          "boundingBox": "333,988,556,38",
+          "words": [
+            {
+              "boundingBox": "333,989,133,36",
+              "text": "NAME"
+            },
+            {
+              "boundingBox": "485,988,62,38",
+              "text": "OF"
+            },
+            {
+              "boundingBox": "566,988,323,38",
+              "text": "SUBSCRIBER:"
+            }
+          ]
+        },
+        {
+          "boundingBox": "334,1092,307,45",
+          "words": [
+            {
+              "boundingBox": "334,1093,94,38",
+              "text": "PPF"
+            },
+            {
+              "boundingBox": "446,1092,99,45",
+              "text": "A/C"
+            },
+            {
+              "boundingBox": "566,1093,75,38",
+              "text": "NO"
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "boundingBox": "997,728,605,404",
+      "lines": [
+        {
+          "boundingBox": "1210,728,392,35",
+          "words": [
+            {
+              "boundingBox": "1210,728,392,35",
+              "text": "COUNTERFOIL-2"
+            }
+          ]
+        },
+        {
+          "boundingBox": "1128,815,416,44",
+          "words": [
+            {
+              "boundingBox": "1128,815,228,43",
+              "text": "BANK'S"
+            },
+            {
+              "boundingBox": "1376,816,168,43",
+              "text": "COPY"
+            }
+          ]
+        },
+        {
+          "boundingBox": "997,1002,364,41",
+          "words": [
+            {
+              "boundingBox": "997,1002,364,41",
+              "text": "SRIKRISHNA"
+            }
+          ]
+        },
+        {
+          "boundingBox": "1012,1087,307,45",
+          "words": [
+            {
+              "boundingBox": "1012,1087,113,41",
+              "text": "2832"
+            },
+            {
+              "boundingBox": "1143,1087,82,41",
+              "text": "693"
+            },
+            {
+              "boundingBox": "1243,1087,76,45",
+              "text": "217"
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "boundingBox": "852,1166,753,31",
+      "lines": [
+        {
+          "boundingBox": "852,1166,753,31",
+          "words": [
+            {
+              "boundingBox": "852,1167,175,30",
+              "text": "AMOUNT"
+            },
+            {
+              "boundingBox": "1038,1166,52,31",
+              "text": "OF"
+            },
+            {
+              "boundingBox": "1102,1167,176,30",
+              "text": "DEPOSIT"
+            },
+            {
+              "boundingBox": "1290,1167,105,30",
+              "text": "CASH"
+            },
+            {
+              "boundingBox": "1444,1167,80,30",
+              "text": "CHE"
+            },
+            {
+              "boundingBox": "1555,1167,50,30",
+              "text": "UE"
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "boundingBox": "332,1235,415,126",
+      "lines": [
+        {
+          "boundingBox": "332,1235,395,37",
+          "words": [
+            {
+              "boundingBox": "332,1235,395,37",
+              "text": "SUBSCRIPTION*"
+            }
+          ]
+        },
+        {
+          "boundingBox": "333,1326,414,35",
+          "words": [
+            {
+              "boundingBox": "333,1326,114,35",
+              "text": "LOAN"
+            },
+            {
+              "boundingBox": "465,1326,282,35",
+              "text": "REPAYMENT*"
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "boundingBox": "330,1417,830,415",
+      "lines": [
+        {
+          "boundingBox": "332,1417,454,36",
+          "words": [
+            {
+              "boundingBox": "332,1418,215,34",
+              "text": "INTEREST"
+            },
+            {
+              "boundingBox": "563,1418,62,35",
+              "text": "ON"
+            },
+            {
+              "boundingBox": "644,1417,142,35",
+              "text": "LOAN*"
+            }
+          ]
+        },
+        {
+          "boundingBox": "332,1509,368,41",
+          "words": [
+            {
+              "boundingBox": "332,1510,189,34",
+              "text": "PENALTY"
+            },
+            {
+              "boundingBox": "537,1509,16,41",
+              "text": "1"
+            },
+            {
+              "boundingBox": "574,1510,126,35",
+              "text": "FEES*"
+            }
+          ]
+        },
+        {
+          "boundingBox": "330,1601,378,34",
+          "words": [
+            {
+              "boundingBox": "330,1601,154,34",
+              "text": "TOTAL"
+            },
+            {
+              "boundingBox": "499,1601,209,34",
+              "text": "AMOUNT"
+            }
+          ]
+        },
+        {
+          "boundingBox": "330,1697,570,43",
+          "words": [
+            {
+              "boundingBox": "330,1698,167,34",
+              "text": "Amount"
+            },
+            {
+              "boundingBox": "514,1698,42,34",
+              "text": "In"
+            },
+            {
+              "boundingBox": "574,1697,135,35",
+              "text": "Words"
+            },
+            {
+              "boundingBox": "725,1697,175,43",
+              "text": "(Rupees"
+            }
+          ]
+        },
+        {
+          "boundingBox": "561,1796,599,36",
+          "words": [
+            {
+              "boundingBox": "561,1797,183,34",
+              "text": "DETAILS"
+            },
+            {
+              "boundingBox": "760,1797,57,35",
+              "text": "OF"
+            },
+            {
+              "boundingBox": "835,1796,117,36",
+              "text": "CASH"
+            },
+            {
+              "boundingBox": "971,1796,189,36",
+              "text": "DEPOSIT"
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "boundingBox": "1602,1235,219,401",
+      "lines": [
+        {
+          "boundingBox": "1602,1235,219,41",
+          "words": [
+            {
+              "boundingBox": "1602,1235,219,41",
+              "text": "3409200"
+            }
+          ]
+        },
+        {
+          "boundingBox": "1604,1316,208,45",
+          "words": [
+            {
+              "boundingBox": "1604,1316,208,45",
+              "text": "2397487"
+            }
+          ]
+        },
+        {
+          "boundingBox": "1608,1420,213,41",
+          "words": [
+            {
+              "boundingBox": "1608,1420,213,41",
+              "text": "0123456"
+            }
+          ]
+        },
+        {
+          "boundingBox": "1607,1504,201,45",
+          "words": [
+            {
+              "boundingBox": "1607,1504,201,45",
+              "text": "67890.12"
+            }
+          ]
+        },
+        {
+          "boundingBox": "1607,1591,201,45",
+          "words": [
+            {
+              "boundingBox": "1607,1591,201,45",
+              "text": "34213.77"
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "boundingBox": "1148,1679,750,45",
+      "lines": [
+        {
+          "boundingBox": "1148,1679,750,45",
+          "words": [
+            {
+              "boundingBox": "1148,1679,113,32",
+              "text": "twelve"
+            },
+            {
+              "boundingBox": "1273,1679,155,32",
+              "text": "thousand"
+            },
+            {
+              "boundingBox": "1440,1679,70,32",
+              "text": "four"
+            },
+            {
+              "boundingBox": "1519,1679,141,32",
+              "text": "hund1Ed"
+            },
+            {
+              "boundingBox": "1672,1679,61,32",
+              "text": "and"
+            },
+            {
+              "boundingBox": "1744,1679,73,45",
+              "text": "fifty"
+            },
+            {
+              "boundingBox": "1825,1679,73,44",
+              "text": "only"
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "boundingBox": "474,1869,111,376",
+      "lines": [
+        {
+          "boundingBox": "474,1869,103,35",
+          "words": [
+            {
+              "boundingBox": "474,1869,103,35",
+              "text": "1000"
+            }
+          ]
+        },
+        {
+          "boundingBox": "502,1923,76,36",
+          "words": [
+            {
+              "boundingBox": "502,1923,76,36",
+              "text": "500"
+            }
+          ]
+        },
+        {
+          "boundingBox": "504,1976,74,35",
+          "words": [
+            {
+              "boundingBox": "504,1976,74,35",
+              "text": "100"
+            }
+          ]
+        },
+        {
+          "boundingBox": "531,2029,51,35",
+          "words": [
+            {
+              "boundingBox": "531,2029,51,35",
+              "text": "so"
+            }
+          ]
+        },
+        {
+          "boundingBox": "531,2088,51,36",
+          "words": [
+            {
+              "boundingBox": "531,2088,51,36",
+              "text": "20"
+            }
+          ]
+        },
+        {
+          "boundingBox": "533,2151,49,35",
+          "words": [
+            {
+              "boundingBox": "533,2151,49,35",
+              "text": "10"
+            }
+          ]
+        },
+        {
+          "boundingBox": "561,2211,24,34",
+          "words": [
+            {
+              "boundingBox": "561,2211,24,34",
+              "text": "S"
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "boundingBox": "749,1869,30,376",
+      "lines": [
+        {
+          "boundingBox": "751,1869,28,34",
+          "words": [
+            {
+              "boundingBox": "751,1869,28,34",
+              "text": "x"
+            }
+          ]
+        },
+        {
+          "boundingBox": "750,1923,28,36",
+          "words": [
+            {
+              "boundingBox": "750,1923,28,36",
+              "text": "x"
+            }
+          ]
+        },
+        {
+          "boundingBox": "750,1977,28,34",
+          "words": [
+            {
+              "boundingBox": "750,1977,28,34",
+              "text": "x"
+            }
+          ]
+        },
+        {
+          "boundingBox": "750,2029,29,35",
+          "words": [
+            {
+              "boundingBox": "750,2029,29,35",
+              "text": "x"
+            }
+          ]
+        },
+        {
+          "boundingBox": "750,2089,28,34",
+          "words": [
+            {
+              "boundingBox": "750,2089,28,34",
+              "text": "x"
+            }
+          ]
+        },
+        {
+          "boundingBox": "749,2151,30,35",
+          "words": [
+            {
+              "boundingBox": "749,2151,30,35",
+              "text": "x"
+            }
+          ]
+        },
+        {
+          "boundingBox": "749,2211,29,34",
+          "words": [
+            {
+              "boundingBox": "749,2211,29,34",
+              "text": "x"
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "boundingBox": "331,2292,777,45",
+      "lines": [
+        {
+          "boundingBox": "331,2292,777,45",
+          "words": [
+            {
+              "boundingBox": "331,2292,159,45",
+              "text": "Cheque"
+            },
+            {
+              "boundingBox": "508,2292,16,44",
+              "text": "/"
+            },
+            {
+              "boundingBox": "544,2292,174,37",
+              "text": "Demand"
+            },
+            {
+              "boundingBox": "739,2292,105,37",
+              "text": "Dran"
+            },
+            {
+              "boundingBox": "876,2295,56,34",
+              "text": "No"
+            },
+            {
+              "boundingBox": "948,2293,31,36",
+              "text": "&"
+            },
+            {
+              "boundingBox": "995,2294,113,35",
+              "text": "Date:"
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "boundingBox": "1238,2273,217,35",
+      "lines": [
+        {
+          "boundingBox": "1238,2273,217,35",
+          "words": [
+            {
+              "boundingBox": "1238,2273,217,35",
+              "text": "25/24/2017"
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "boundingBox": "1646,1797,286,539",
+      "lines": [
+        {
+          "boundingBox": "1686,1797,186,35",
+          "words": [
+            {
+              "boundingBox": "1686,1797,186,35",
+              "text": "AMOUNT"
+            }
+          ]
+        },
+        {
+          "boundingBox": "1663,1867,186,37",
+          "words": [
+            {
+              "boundingBox": "1663,1867,186,37",
+              "text": "34213.77"
+            }
+          ]
+        },
+        {
+          "boundingBox": "1660,1923,172,37",
+          "words": [
+            {
+              "boundingBox": "1660,1923,172,37",
+              "text": "3421377"
+            }
+          ]
+        },
+        {
+          "boundingBox": "1666,1975,154,33",
+          "words": [
+            {
+              "boundingBox": "1666,1975,154,33",
+              "text": "34213.77"
+            }
+          ]
+        },
+        {
+          "boundingBox": "1646,2276,139,29",
+          "words": [
+            {
+              "boundingBox": "1646,2276,45,29",
+              "text": "20"
+            },
+            {
+              "boundingBox": "1750,2276,35,29",
+              "text": "14"
+            }
+          ]
+        },
+        {
+          "boundingBox": "1897,2276,35,29",
+          "words": [
+            {
+              "boundingBox": "1897,2276,35,29",
+              "text": "14"
+            }
+          ]
+        },
+        {
+          "boundingBox": "1794,2292,73,44",
+          "words": [
+            {
+              "boundingBox": "1794,2292,73,44",
+              "text": "/20"
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "boundingBox": "377,2386,1658,444",
+      "lines": [
+        {
+          "boundingBox": "1414,2386,318,30",
+          "words": [
+            {
+              "boundingBox": "1414,2386,60,29",
+              "text": "SBI"
+            },
+            {
+              "boundingBox": "1486,2386,124,29",
+              "text": "TIDAL"
+            },
+            {
+              "boundingBox": "1621,2386,111,30",
+              "text": "PARK"
+            }
+          ]
+        },
+        {
+          "boundingBox": "377,2399,687,42",
+          "words": [
+            {
+              "boundingBox": "377,2399,107,36",
+              "text": "Bank"
+            },
+            {
+              "boundingBox": "499,2399,16,42",
+              "text": "I"
+            },
+            {
+              "boundingBox": "534,2399,143,36",
+              "text": "Branch"
+            },
+            {
+              "boundingBox": "696,2408,51,27",
+              "text": "on"
+            },
+            {
+              "boundingBox": "766,2399,128,36",
+              "text": "Which"
+            },
+            {
+              "boundingBox": "912,2400,152,34",
+              "text": "Dram•"
+            }
+          ]
+        },
+        {
+          "boundingBox": "998,2584,461,36",
+          "words": [
+            {
+              "boundingBox": "998,2584,237,36",
+              "text": "Deoositor•s"
+            },
+            {
+              "boundingBox": "1250,2585,209,35",
+              "text": "Sianature"
+            }
+          ]
+        },
+        {
+          "boundingBox": "1914,2809,121,21",
+          "words": [
+            {
+              "boundingBox": "1914,2809,34,21",
+              "text": "su"
+            },
+            {
+              "boundingBox": "1956,2809,79,21",
+              "text": "'ORW"
+            }
+          ]
+        }
+      ]
+    }
+  ]
+}
