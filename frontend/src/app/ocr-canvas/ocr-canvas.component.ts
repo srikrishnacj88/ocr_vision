@@ -14,9 +14,10 @@ declare var Konva;
 export class OcrCanvasComponent implements OnInit {
   private logger: any;
   @Input('logname') logname: string;
-  @Input('image$') image$: Rx.Observable<any>;
-  @Input('words$') words$: Rx.Observable<any>;
+  @Input('inputs') inputs: any;
   @ViewChild('container') CONTAINER: ElementRef;
+
+  private canvas: any;
 
   constructor() {
   }
@@ -24,27 +25,45 @@ export class OcrCanvasComponent implements OnInit {
   ngOnInit() {
     this.logger = LoggerService.getLogger(this.logname);
 
-    let canvas$ = this.image$
-      .do(this.log('Img event received'))
-      .observeOn(Rx.Scheduler.async)
-      .switchMap(this.fileToImgObj.bind(this))
-      // .observeOn(Rx.Scheduler.async)
-      .switchMap(img => this.imageToCanvas.call(this, img, this.CONTAINER))
+    let canvas$ = this.inputs.imageToCanvas$
+      .pluck('fileMap')
+      .switchMap((event: any) => this.imageToCanvas.call(this, event.img, this.CONTAINER))
       .do(this.log('Canvas visible and ready to use'))
       .do(this.log('Trigger canvas redraw'))
-      // .observeOn(Rx.Scheduler.async)
-      // .do((canvas: any) => canvas.stage.draw())
+      .do((canvas: any) => canvas.stage.draw())
+      .do((canvas: any) => {
+        this.canvas = canvas.stage;
+      })
       .do(null, (error) => {
         this.log('Something went wrong while processing new IMG event' + error)();
         console.error(error);
       });
+    // .subscribe(null, null, null);
 
+
+    this.inputs.canvasScale$.subscribe(scale => {
+      try {
+        this.canvas.scaleX(scale);
+        this.canvas.scaleY(scale);
+        this.canvas.draw();
+
+        const $konva = $(this.CONTAINER.nativeElement).find('.konvajs-content');
+        const width = this.canvas.width() * scale;
+        const height = this.canvas.height() * scale;
+
+        $konva
+          .width(width)
+          .height(height);
+      } catch (e) {
+        console.error(e);
+      }
+    });
     Rx.Observable
-      .zip(this.words$.do(this.log('ocr words event received')), canvas$, (words, canvas) => {
+      .zip(this.inputs.words$.do(this.log('ocr words event received')), canvas$, (words, canvas) => {
         return {canvas, words};
       })
-      .observeOn(Rx.Scheduler.async)
-      .do(state => this.log('processing ocr words. size:' + state.words.length)())
+      //   .observeOn(Rx.Scheduler.async)
+      .do((state: any) => this.log('processing ocr words. size:' + state.words.length)())
       .do((state: any) => {
         let canvas = state.canvas;
         Rx.Observable.from(state.words)
@@ -59,7 +78,7 @@ export class OcrCanvasComponent implements OnInit {
   }
 
   fileToImgObj(input) {
-    let file = input.file;
+    let file = input.fileMap.file;
     return Rx.Observable.create(observer => {
       this.log('loading img')();
       var img = new Image();

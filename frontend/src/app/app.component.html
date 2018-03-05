@@ -20,9 +20,14 @@
   </div>
 </nav>
 
+<!--<div class="content overflow-scroll">-->
+<!--<app-image (image)="onImage($event)" (scale)="onScale($event)"></app-image>-->
+<!--<app-google [image$]="image$" [scale$]="scale$"></app-google>-->
+<!--<app-microsoft [image$]="image$" [scale$]="scale$"></app-microsoft>-->
+<!--<app-abby [image$]="image$" [scale$]="scale$"></app-abby>-->
+<!--</div>-->
+
+
 <div class="content overflow-scroll">
-  <app-image (image)="onImage($event)" (scale)="onScale($event)"></app-image>
-  <app-google [image$]="image$" [scale$]="scale$"></app-google>
-  <app-microsoft [image$]="image$" [scale$]="scale$"></app-microsoft>
-  <app-abby [image$]="image$" [scale$]="scale$"></app-abby>
+  <app-ocr *ngFor="let service of ocrService; let ii = index" [input]="service" [attr.id]="service.id"></app-ocr>
 </div>

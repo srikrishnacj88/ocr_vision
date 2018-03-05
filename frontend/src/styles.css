@@ -27,6 +27,11 @@ fw {
   overflow: scroll;
 }
 
-.drop-container img, .results .konvajs-content{
+.zone .konvajs-content{
     transform-origin: top left;
+    overflow:hidden;
+}
+
+.zone {
+  box-shadow: -5px 0 5px -5px rgba(0, 0, 0, 0.2);;
 }

@@ -6,8 +6,7 @@ declare var $;
 @Injectable()
 export class AppUtilService {
 
-  constructor() {
-  }
+  static SERVER_BASE = 'http://localhost:8080/';
 
   static fromDropGetImages(selector) {
     function getFiles(event) {
@@ -95,8 +94,9 @@ export class AppUtilService {
   static fromEventZoom(selector) {
     let zoom$ = Rx.Observable.create(observer => {
       let listener = (event, delta) => {
+        event.preventDefault();
+        event.stopPropagation();
         if (event.ctrlKey) {
-          event.preventDefault();
           observer.next(delta);
         }
       };
@@ -110,7 +110,7 @@ export class AppUtilService {
     return zoom$
       .map(delta => delta == 1 ? 2 : -2)
       .scan((acc, val) => acc + val, 100)
-      .startWith(100)
+      // .startWith(100)
       .map(val => val / 100);
   }
 
@@ -126,7 +126,8 @@ export class AppUtilService {
       };
     });
 
-    return scroll$.startWith({scrollTop: 0, scrollLeft: 0});
+    // return scroll$.startWith({scrollTop: 0, scrollLeft: 0});
+    return scroll$;
   }
 
   static calFontSize(text, width, height) {
