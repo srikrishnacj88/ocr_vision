@@ -28,12 +28,12 @@ export class AppComponent implements OnInit {
     let service: any = this.createOCRService('OCR_PLAYER_1', 'PREVIEW');
     this.ocrService.push(service);
 
-    service = this.createOCRService('OCR_PLAYER_2', 'MICROSOFT');
-    service.ocr = this.microsoftService;
-    this.ocrService.push(service);
-
     service = this.createOCRService('OCR_PLAYER_3', "GOOGLE");
     service.ocr = this.googleService;
+    this.ocrService.push(service);
+
+    service = this.createOCRService('OCR_PLAYER_2', 'MICROSOFT');
+    service.ocr = this.microsoftService;
     this.ocrService.push(service);
 
     service = this.createOCRService('OCR_PLAYER_4',"ABBYY");
@@ -45,7 +45,6 @@ export class AppComponent implements OnInit {
       service.scrollOT$.subscribe(this.onScroll.bind(this));
       service.zoomOT$.subscribe(this.onZoom.bind(this));
     });
-
 
     AppUtilService.fromDropGetImages("body").subscribe();
     AppUtilService.fromEventZoom("body").subscribe();

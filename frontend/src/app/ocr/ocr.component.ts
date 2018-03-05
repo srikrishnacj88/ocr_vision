@@ -200,10 +200,10 @@ export class OcrComponent {
     if (!this.canvas) {
       return;
     }
-    if (event.zoom > 1) {
-      this.logger.info('cannon zoom more then 100%');
-      return;
-    }
+    // if (event.zoom > 1) {
+    //   this.logger.info('cannon zoom more then 100%');
+    //   return;
+    // }
 
     KonvaCanvasService.zoom(this.canvas, event.zoom);
 

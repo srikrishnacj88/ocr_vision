@@ -6,6 +6,7 @@ import * as Rx from '../../../../node_modules/rxjs/Rx';
 import {LoggerService} from '../logger.service';
 
 declare var Konva;
+declare var $;
 
 @Injectable()
 export class KonvaCanvasService {
@@ -143,9 +144,16 @@ export class KonvaCanvasService {
   }
 
   static zoom(canvas, zoom) {
-    canvas.stage.scaleX(zoom);
-    canvas.stage.scaleY(zoom);
-    canvas.stage.draw();
+    if (zoom > 1) {
+      console.log(canvas);
+      $(canvas.stage.getContainer()).css('transform', 'scale(' + zoom + ')');
+      $(canvas.stage.getContainer()).css('transform-origin', 'top left');
+    } else {
+      $(canvas.stage.getContainer()).css('transform', 'scale(1)');
+      canvas.stage.scaleX(zoom);
+      canvas.stage.scaleY(zoom);
+      canvas.stage.draw();
+    }
   }
 
   static getWidth(canvas) {
