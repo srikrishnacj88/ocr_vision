@@ -100,6 +100,7 @@ export class OcrComponent {
     } else {
       this.toChild.imageToCanvas$.next(event);
       this.showCanvasDOM();
+      this.toChild.words$.next([]);
     }
   }
 

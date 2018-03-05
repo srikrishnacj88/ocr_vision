@@ -2,6 +2,7 @@ import {Component, ElementRef, Input, OnInit, ViewChild} from '@angular/core';
 import {AppUtilService} from '../app-util.service';
 import * as Rx from 'rxjs';
 import {LoggerService} from '../logger.service';
+import {KonvaCanvasService} from '../services/konva-canvas.service';
 
 declare var $;
 declare var Konva;
@@ -24,21 +25,42 @@ export class OcrCanvasComponent implements OnInit {
 
   ngOnInit() {
     this.logger = LoggerService.getLogger(this.logname);
+    let ID = (Math.round(Math.random() + 1) * 100000000) + '';
+    this.CONTAINER.nativeElement.id = ID;
 
-    let canvas$ = this.inputs.imageToCanvas$
+    let canvas$ = this.inputs
+      .imageToCanvas$
       .pluck('fileMap')
-      .switchMap((event: any) => this.imageToCanvas.call(this, event.img, this.CONTAINER))
-      .do(this.log('Canvas visible and ready to use'))
-      .do(this.log('Trigger canvas redraw'))
-      .do((canvas: any) => canvas.stage.draw())
-      .do((canvas: any) => {
-        this.canvas = canvas.stage;
+      .switchMap((event: any) => KonvaCanvasService.create(ID, 'http://localhost:8080/image/' + event.id))
+      // .subscribe();
+
+    let words$ = this.inputs
+      .words$;
+
+    Rx.Observable
+      .zip(words$, canvas$, (words, canvas) => {
+        return {canvas, words};
       })
-      .do(null, (error) => {
-        this.log('Something went wrong while processing new IMG event' + error)();
-        console.error(error);
+      .do(console.log)
+      .subscribe((obj: any) => {
+        KonvaCanvasService.setWords(obj.canvas, obj.words);
       });
-    // .subscribe(null, null, null);
+
+    // let canvas$ = this.inputs.imageToCanvas$
+    //   .pluck('fileMap')
+    //   // .switchMap((event: any) => this.imageToCanvas.call(this, event.img, this.CONTAINER))
+    //   .do(console.log)
+    //   .switchMap((event: any) => KonvaCanvasService.create(ID, 'http://localhost:8080/image/' + event.id))
+    //   .do(this.log('Canvas visible and ready to use'))
+    //   .do(this.log('Trigger canvas redraw'))
+    //   .do((canvas: any) => canvas.stage.draw())
+    //   .do((canvas: any) => {
+    //     this.canvas = canvas.stage;
+    //   })
+    //   .do(null, (error) => {
+    //     this.log('Something went wrong while processing new IMG event' + error)();
+    //     console.error(error);
+    //   });
 
 
     this.inputs.canvasScale$.subscribe(scale => {
@@ -58,98 +80,23 @@ export class OcrCanvasComponent implements OnInit {
         console.error(e);
       }
     });
-    Rx.Observable
-      .zip(this.inputs.words$.do(this.log('ocr words event received')), canvas$, (words, canvas) => {
-        return {canvas, words};
-      })
-      //   .observeOn(Rx.Scheduler.async)
-      .do((state: any) => this.log('processing ocr words. size:' + state.words.length)())
-      .do((state: any) => {
-        let canvas = state.canvas;
-        Rx.Observable.from(state.words)
-          .map(word => Object.assign({}, {canvas, word}))
-          // .observeOn(Rx.Scheduler.async)
-          .do(this.renderWordBG.bind(this))
-          .do(this.renderWordText.bind(this))
-          .do(null, null, () => state.canvas.stage.draw())
-          .subscribe();
-      })
-      .subscribe(null, null, null);
-  }
-
-  fileToImgObj(input) {
-    let file = input.fileMap.file;
-    return Rx.Observable.create(observer => {
-      this.log('loading img')();
-      var img = new Image();
-      var reader = new FileReader();
-      reader.onload = (event) => {
-        img.src = event.target['result'];
-        img.onload = () => {
-          this.log('img loaded')();
-          observer.next(img);
-          observer.complete();
-        };
-      };
-      reader.readAsDataURL(file);
-      return img;
-    });
-  }
-
-  imageToCanvas(img, containerRef) {
-    let ID = (Math.random() * 100000000) + '';
-
-    this.log('creating canvas')();
-    let scale = 1;
-    let stage = new Konva.Stage({
-      container: containerRef.nativeElement,   // id of container <div>
-      width: img.width * scale,
-      height: img.height * scale,
-      fill: 'green'
-    });
-
-    let bgLayer = new Konva.Layer({id: 'BG_LAYER' + ID});
-    let imgLayer = new Konva.Layer({id: 'IMG_LAYER' + ID});
-    let rectLayer = new Konva.Layer({id: 'RECT_LAYER' + ID});
-    let wordLayer = new Konva.Layer({id: 'WORD_LAYER' + ID});
-
-    stage.add(bgLayer);
-    stage.add(imgLayer);
-    stage.add(rectLayer);
-    stage.add(wordLayer);
-
-    let bgColor = new Konva.Rect({
-      x: 0,
-      y: 0,
-      width: stage.width(),
-      height: stage.height(),
-      fill: '#eee',
-    });
-    bgLayer.add(bgColor);
-
-    let konvaImg = new Konva.Image({
-      image: img,
-      width: stage.width(),
-      height: stage.height()
-    });
-    imgLayer.add(konvaImg);
-
-    let canvas = {ID, rectLayer, wordLayer, stage: stage};
-    let isStageVisible = () => {
-      let rectLayer = stage.findOne('#RECT_LAYER' + ID);
-      let wordLayer = stage.findOne('#WORD_LAYER' + ID);
-      let isReady = typeof rectLayer !== 'undefined' && typeof wordLayer !== 'undefined';
-      this.log('is canvas visible in dom?:' + isReady)();
-      return isReady;
-    };
-    this.log('canvas created. waiting until it is visible in dom')();
-
-    return Rx.Observable.create(observer => {
-      AppUtilService.emmitWhen(canvas, isStageVisible).subscribe((obj) => {
-        observer.next(obj);
-      });
-      return () => canvas.stage.remove();
-    });
+    // Rx.Observable
+    //   .zip(this.inputs.words$.do(this.log('ocr words event received')), canvas$, (words, canvas) => {
+    //     return {canvas, words};
+    //   })
+    //   //   .observeOn(Rx.Scheduler.async)
+    //   .do((state: any) => this.log('processing ocr words. size:' + state.words.length)())
+    //   .do((state: any) => {
+    //     let canvas = state.canvas;
+    //     Rx.Observable.from(state.words)
+    //       .map(word => Object.assign({}, {canvas, word}))
+    //       // .observeOn(Rx.Scheduler.async)
+    //       .do(this.renderWordBG.bind(this))
+    //       .do(this.renderWordText.bind(this))
+    //       .do(null, null, () => state.canvas.stage.draw())
+    //       .subscribe();
+    //   })
+    //   .subscribe(null, null, null);
   }
 
   renderWordBG(data) {

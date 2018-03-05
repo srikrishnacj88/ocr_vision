@@ -14,4 +14,3 @@ export class Rectangle {
   constructor(public top: number, public left: number, public width: number, public height: number) {
   }
 }
-

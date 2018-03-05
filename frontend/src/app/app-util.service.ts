@@ -59,24 +59,7 @@ export class AppUtilService {
       .filter(isImage);
   }
 
-  static fileToImg(file) {
-    return Rx.Observable.create(observer => {
-      var img = document.createElement('img');
-      var reader = new FileReader();
-      reader.onload = (event) => {
-        img.src = event.target['result'];
-        img.onload = () => {
-          observer.next(img);
-          observer.complete();
-        };
-      };
-      reader.readAsDataURL(file);
-      return img;
-    });
-  }
-
   static fileToImgObj(id) {
-    // debugger
     return Rx.Observable.create(observer => {
       var img = new Image();
 
@@ -84,18 +67,19 @@ export class AppUtilService {
         observer.next(img);
         observer.complete();
       };
-
       img.src = 'http://localhost:8080/image/' + id;
+      return img;
+    });
+  }
 
-      // var reader = new FileReader();
-      // reader.onload = (event) => {
-      //   img.src = event.target['result'];
-      //   img.onload = () => {
-      //     observer.next(img);
-      //     observer.complete();
-      //   };
-      // };
-      // reader.readAsDataURL(file);
+  static createIMG(url) {
+    return Rx.Observable.create(observer => {
+      var img = new Image();
+      img.onload = function () {
+        observer.next(img);
+        observer.complete();
+      };
+      img.src = url;
       return img;
     });
   }
