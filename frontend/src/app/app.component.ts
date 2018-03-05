@@ -1,9 +1,10 @@
 import {Component, ElementRef, OnInit, ViewChild} from '@angular/core';
 import * as Rx from 'rxjs/Rx';
-import {LoggerService} from './logger.service';
-import {MicrosoftService} from './services/microsoft.service';
-import {GoogleService} from './services/google.service';
-import {AbbyyService} from './services/abbyy.service';
+import {LoggerService} from './services/logger.service';
+import {MicrosoftService} from './services/ocr/microsoft.service';
+import {GoogleService} from './services/ocr/google.service';
+import {AbbyyService} from './services/ocr/abbyy.service';
+import {AppUtilService} from './services/app-util.service';
 
 declare var $;
 
@@ -19,7 +20,6 @@ export class AppComponent implements OnInit {
   constructor(private microsoftService: MicrosoftService,
               private googleService: GoogleService,
               private abbyyService: AbbyyService) {
-
   }
 
   ngOnInit(): void {
@@ -29,22 +29,26 @@ export class AppComponent implements OnInit {
     this.ocrService.push(service);
 
     service = this.createOCRService('OCR_PLAYER_2', 'MICROSOFT');
-    // service.ocr = this.microsoftService;
+    service.ocr = this.microsoftService;
     this.ocrService.push(service);
 
-    // service = this.createOCRService('OCR_PLAYER_3', "GOOGLE");
-    // service.ocr = this.googleService;
-    // this.ocrService.push(service);
+    service = this.createOCRService('OCR_PLAYER_3', "GOOGLE");
+    service.ocr = this.googleService;
+    this.ocrService.push(service);
 
-    // service = this.createOCRService('OCR_PLAYER_4',"ABBYY");
-    // service.ocr = this.abbyyService;
-    // this.ocrService.push(service);
+    service = this.createOCRService('OCR_PLAYER_4',"ABBYY");
+    service.ocr = this.abbyyService;
+    this.ocrService.push(service);
 
     this.ocrService.forEach((service) => {
       service.imageOT$.subscribe(this.onImage.bind(this));
-      service.scrollOT$.subscribe(this.onScale.bind(this));
+      service.scrollOT$.subscribe(this.onScroll.bind(this));
       service.zoomOT$.subscribe(this.onZoom.bind(this));
     });
+
+
+    AppUtilService.fromDropGetImages("body").subscribe();
+    AppUtilService.fromEventZoom("body").subscribe();
   }
 
   private createOCRService(id, name) {
@@ -69,8 +73,8 @@ export class AppComponent implements OnInit {
     });
   }
 
-  onScale(event) {
-    this.logger.info('Propagating SCALE Event:' + JSON.stringify(event));
+  onScroll(event) {
+    // this.logger.info('Propagating SCALE Event:' + JSON.stringify(event));
     this.ocrService.forEach((service) => {
       if (service.id === event.id) {
         return;

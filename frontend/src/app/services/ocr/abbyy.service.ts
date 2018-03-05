@@ -15,7 +15,6 @@ export class AbbyyService implements OCRService {
     let res$ = Rx.Observable
       .ajax(this.URL + id)
       .pluck('response')
-      .do(console.log)
       .pluck('document')
       .map(doc => {
         return this.flatObj(doc, []);

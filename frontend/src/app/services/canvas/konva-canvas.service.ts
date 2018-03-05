@@ -1,8 +1,8 @@
 import {Injectable} from '@angular/core';
 import {CanvasService} from './canvas.service';
-import {Word} from './OCRService';
+import {Word} from '../ocr/OCRService';
 import {AppUtilService} from '../app-util.service';
-import * as Rx from '../../../node_modules/rxjs';
+import * as Rx from '../../../../node_modules/rxjs/Rx';
 import {LoggerService} from '../logger.service';
 
 declare var Konva;
@@ -10,22 +10,32 @@ declare var Konva;
 @Injectable()
 export class KonvaCanvasService {
   static logger = LoggerService.getLogger('KonvaCanvasService');
+  private static scaleRatio = 0.5;
 
   static create(SELECTOR, URL) {
-    console.log(SELECTOR);
     return AppUtilService
       .createIMG(URL)
+      .do(KonvaCanvasService.calculateScalling)
       .switchMap((img) => this.imageToCanvas(img, SELECTOR));
   }
 
+  static calculateScalling(img) {
+    if (img.width > 1200) {
+      KonvaCanvasService.scaleRatio = 0.5;
+    } else if (img.height > 1200) {
+      KonvaCanvasService.scaleRatio = 0.5;
+    } else {
+      KonvaCanvasService.scaleRatio = 1;
+    }
+  }
+
   static setWords(canvas: any, words: Array<Word>) {
-    if(words.length == 0){
+    if (words.length == 0) {
       canvas.stage.draw();
       return;
     }
     Rx.Observable.from(words)
       .map(word => Object.assign({}, {canvas, word}))
-      // .observeOn(Rx.Scheduler.async)
       .do(KonvaCanvasService.renderWordBG)
       .do(KonvaCanvasService.renderWordText)
       .do(null, null, () => canvas.stage.draw())
@@ -37,13 +47,13 @@ export class KonvaCanvasService {
   }
 
   private static imageToCanvas(img, SELECTOR) {
-    let ID = (Math.round(Math.random()) * 100000000) + '';
+    let ID = SELECTOR + '_KONVA';
 
-    let scale = 1;
     let stage = new Konva.Stage({
+      id: ID,
       container: (SELECTOR),   // id of container <div>
-      width: img.width * scale,
-      height: img.height * scale,
+      width: KonvaCanvasService.scale(img.width),
+      height: KonvaCanvasService.scale(img.height),
       fill: 'green'
     });
 
@@ -100,10 +110,10 @@ export class KonvaCanvasService {
 
     let fill = 'rgba(' + color + ',' + word.confidence + ')';
     let canvasBox = new Konva.Rect({
-      x: word.rect.top,
-      y: word.rect.left,
-      width: word.rect.width,
-      height: word.rect.height,
+      x: KonvaCanvasService.scale(word.rect.top),
+      y: KonvaCanvasService.scale(word.rect.left),
+      width: KonvaCanvasService.scale(word.rect.width),
+      height: KonvaCanvasService.scale(word.rect.height),
       fill,
     });
     data.canvas.rectLayer.add(canvasBox);
@@ -112,14 +122,37 @@ export class KonvaCanvasService {
   private static renderWordText(data) {
     let word = data.word;
     let fontSize = AppUtilService.calFontSize(word.text, word.rect.width, word.rect.height);
+    fontSize = KonvaCanvasService.scale(fontSize);
     var canvasText = new Konva.Text({
-      x: word.rect.top,
-      y: word.rect.left,
+      x: KonvaCanvasService.scale(word.rect.top),
+      y: KonvaCanvasService.scale(word.rect.left),
       text: word.text,
       fontSize,
       // fontFamily: 'arial',
       fill: 'black'
     });
     data.canvas.wordLayer.add(canvasText);
+  }
+
+  private static scale(number) {
+    return number * KonvaCanvasService.scaleRatio;
+  }
+
+  public static scaleFor(scale, number) {
+    return scale * number;
+  }
+
+  static zoom(canvas, zoom) {
+    canvas.stage.scaleX(zoom);
+    canvas.stage.scaleY(zoom);
+    canvas.stage.draw();
+  }
+
+  static getWidth(canvas) {
+    return canvas.stage.getWidth();
+  }
+
+  static getHeight(canvas) {
+    return canvas.stage.getHeight();
   }
 }

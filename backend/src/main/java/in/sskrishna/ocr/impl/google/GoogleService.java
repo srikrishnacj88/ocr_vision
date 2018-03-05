@@ -46,7 +46,7 @@ public class GoogleService implements OCRService {
                 return gson.toJson(annotation);
             }
         } catch (Exception e) {
-            throw new RuntimeException("Error Google OCR");
+            throw new RuntimeException("Error Google OCR", e);
         }
         return null;
     }

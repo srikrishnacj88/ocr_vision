@@ -1,8 +1,9 @@
 import {Component, ElementRef, Input, OnInit, Output, ViewChild} from '@angular/core';
 import * as Rx from 'rxjs/Rx';
-import {LoggerService} from '../logger.service';
-import {AppUtilService} from '../app-util.service';
-import {OCRService, Word} from '../services/OCRService';
+import {LoggerService} from '../services/logger.service';
+import {AppUtilService} from '../services/app-util.service';
+import {UploadService} from '../services/upload.service';
+import {KonvaCanvasService} from '../services/canvas/konva-canvas.service';
 
 declare var $;
 
@@ -12,160 +13,108 @@ declare var $;
   styleUrls: ['./ocr.component.css']
 })
 export class OcrComponent {
-
   private logger: any;
 
   @ViewChild('zone') VIEW: ElementRef;
-  @Input('input') input: any;
+  @Input('input') inputs: any;
 
-  toChild = {
-    imageToCanvas$: new Rx.Subject(),
-    canvasScale$: new Rx.Subject(),
-    words$: new Rx.Subject()
-  };
+  private subscriptions: Array<any> = [];
 
-  private UPLOAD_URL = 'http://localhost:8080/upload';
-
-  private ZONE_CONTAINER_SELECTOR: string;
   private MSG_SELECTOR: string;
-  private MSG_CONTAINER_SELECTOR: string;
+  private ZONE_SELECTOR: string;
   private CANVAS_SELECTOR: string;
 
-  ngAfterViewInit() {
-    this.logger = LoggerService.getLogger(this.input.id);
-    this.MSG_SELECTOR = '#' + this.input.id + ' .message';
-    this.MSG_CONTAINER_SELECTOR = '#' + this.input.id + ' .message-container';
-    this.ZONE_CONTAINER_SELECTOR = '#' + this.input.id + ' .zone-container';
-    this.CANVAS_SELECTOR = '#' + this.input.id + ' app-ocr-canvas';
+  private canvas: any;
 
+  constructor(private uploadService: UploadService) {
+
+  }
+
+  ngAfterViewInit() {
+    this.logger = LoggerService.getLogger(this.inputs.id);
+    this.MSG_SELECTOR = '#' + this.inputs.id + ' .message';
+    this.ZONE_SELECTOR = '#' + this.inputs.id + ' .zone';
+    this.CANVAS_SELECTOR = '#' + this.inputs.id + ' .konvajs-content';
     this.message('Drop your images here');
 
-    AppUtilService
-      .fromDropGetImages('#' + this.input.id)
-      .observeOn(Rx.Scheduler.async)
-      .switchMap(this.uploadFile.bind(this))
-      .observeOn(Rx.Scheduler.async)
-      .switchMap(event => AppUtilService.fileToImgObj.call(AppUtilService, event.id).map(img => Object.assign(event, {img})))
-      .observeOn(Rx.Scheduler.async)
-      .map(this.publishImageEvent.bind(this))
-      .observeOn(Rx.Scheduler.async)
-      .do(this.processImageEvent.bind(this))
-      .subscribe();
+    let subscription$ = null;
 
-    this.input.imageIN$
-      .do(this.processImageEvent.bind(this))
+    /**
+     * Process Image Events
+     **/
+    subscription$ = AppUtilService
+      .fromDropGetImages('#' + this.inputs.id)
+      .switchMap(this.upload.bind(this))
+      .catch(error => {
+        if (error.response && error.response.message.indexOf('exceeds the configured maximum') !== -1) {
+          this.message('Image size must be less then 4MB');
+        } else {
+          this.message('Failed to upload you image.');
+          this.logger.error(error);
+        }
+        return Rx.Observable.empty();
+      })
+      .map(this.publishImgEvent.bind(this))
+      .do(this.processImgEvent.bind(this))
       .subscribe();
+    this.subscriptions.push(subscription$);
 
-    AppUtilService
-      .fromEventScroll(this.ZONE_CONTAINER_SELECTOR)
+    subscription$ = this.inputs.imageIN$
+      .do(this.processImgEvent.bind(this))
+      .subscribe();
+    this.subscriptions.push(subscription$);
+
+
+    /**
+     * Process Scroll Events
+     **/
+    let selfScroll$ = AppUtilService
+      .fromEventScroll(this.ZONE_SELECTOR)
       .debounceTime(50)
-      // .do(this.processScrollEvent.bind(this))
-      .do(this.publishScrollEvent.bind(this))
-      .subscribe();
+      .map(this.publishScrollEvent.bind(this));
 
-    this.input.scrollIN$
+    subscription$ = Rx.Observable
+      .merge(selfScroll$, this.inputs.scrollIN$)
+      .distinctUntilChanged((prev: any, next: any) => {
+        let isTopSame = prev.scroll.scrollTop === next.scroll.scrollTop;
+        let isLeftSame = prev.scroll.scrollLeft === next.scroll.scrollLeft;
+        return isTopSame && isLeftSame;
+      })
       .do(this.processScrollEvent.bind(this))
       .subscribe();
+    this.subscriptions.push(subscription$);
 
-    AppUtilService
-      .fromEventZoom('#' + this.input.id)
+
+    /**
+     * Process Zoom Events
+     **/
+    subscription$ = AppUtilService
+      .fromEventZoom(this.ZONE_SELECTOR)
       .debounceTime(50)
-      .observeOn(Rx.Scheduler.async)
       .map(this.publishZoomEvent.bind(this))
-      .observeOn(Rx.Scheduler.async)
       .do(this.processZoomEvent.bind(this))
       .subscribe();
+    this.subscriptions.push(subscription$);
 
-
-    this.input.zoomIN$
+    this.inputs.zoomIN$
       .do(this.processZoomEvent.bind(this))
       .subscribe();
   }
 
-  processImageEvent(event) {
-    let service: OCRService = this.input.ocr;
-    if (service) {
-      this.message('Calling service. Hang on');
-      service
-        .process(event.fileMap.id)
-        .catch(() => {
-          this.message('Service request failed');
-          return Rx.Observable.empty();
-        })
-        .do(() => this.showCanvasDOM())
-        .do(() => this.toChild.imageToCanvas$.next(event))
-        .subscribe((words: Array<Word>) => {
-          this.toChild.words$.next(words);
-        });
-    } else {
-      this.toChild.imageToCanvas$.next(event);
-      this.showCanvasDOM();
-      this.toChild.words$.next([]);
-    }
+  ngOnDestroy() {
+    this.subscriptions.forEach(sub$ => {
+      sub$.unsubscribe();
+    });
   }
 
-  publishImageEvent(fileMap) {
-    let event = {id: this.input.id, fileMap};
-    this.logger.debug('publishing ZOOM Event: ' + JSON.stringify(event));
-    this.input.imageOT$.next(event);
-    return event;
+  message(msg) {
+    $(this.MSG_SELECTOR).text(this.inputs.name + ': ' + msg);
   }
 
-  processZoomEvent(event) {
-    this.logger.debug('ZOOM Event received: ' + JSON.stringify(event));
-    const $konva = $(this.CANVAS_SELECTOR).find('.konvajs-content');
-    const width = $konva.width() * event.zoom;
-    const height = $konva.height() * event.zoom;
-
-    $(this.CANVAS_SELECTOR)
-      .width(width)
-      .height(height);
-
-    this.toChild.canvasScale$.next(event.zoom);
-    // $(this.CANVAS_SELECTOR).find('.konvajs-content').css('transform', 'scale(' + event.zoom + ')');
-  }
-
-  publishZoomEvent(zoom) {
-    let event = {id: this.input.id, zoom};
-    this.logger.debug('publishing ZOOM Event: ' + JSON.stringify(event));
-    this.input.zoomOT$.next(event);
-    return event;
-  }
-
-  processScrollEvent(event) {
-    this.logger.debug('SCROLL Event received: ' + JSON.stringify(event));
-    let scroll = event.scroll;
-    $(this.ZONE_CONTAINER_SELECTOR)
-      .scrollTop(scroll.scrollTop)
-      .scrollLeft(scroll.scrollLeft);
-  }
-
-  publishScrollEvent(scroll) {
-    let event = {id: this.input.id, scroll};
-    this.logger.debug('publishing SCROLL Event: ' + JSON.stringify(event));
-    this.input.scrollOT$.next(event);
-  }
-
-  uploadFile(file) {
+  upload(file) {
     this.message('Uploading your image');
-    const formData = new FormData();
-    formData.append('file', file);
-    const request = new XMLHttpRequest();
-    const getRequest = () => request;
-
-    const options = {
-      url: this.UPLOAD_URL,
-      method: 'POST',
-      body: formData,
-      createXHR: getRequest
-    };
-
-    let res$ = Rx.Observable
-      .ajax(options)
-      .pluck('response')
-      .pluck('id')
-      .map(id => Object.assign({}, {id, file}))
-      .do((data: any) => $(this.MSG_SELECTOR).text('File ID: ' + (data.id.substr(0, 7)) + '...'))
+    const res$ = this.uploadService.upload(file)
+      .do((id: any) => $(this.MSG_SELECTOR).text('File ID: ' + (id.substr(0, 7)) + '...'))
       .catch(error => {
         if (error.response && error.response.message.indexOf('exceeds the configured maximum') !== -1) {
           this.message('Image size must be less then 4MB');
@@ -178,13 +127,93 @@ export class OcrComponent {
     return res$;
   }
 
-  showCanvasDOM() {
-    $(this.MSG_CONTAINER_SELECTOR).remove();
-    $(this.CANVAS_SELECTOR).removeClass('hide');
-    $(this.ZONE_CONTAINER_SELECTOR).addClass('overflow-scroll');
+  publishImgEvent(id) {
+    let event: any = {id: this.inputs.id};
+    event.img = {id};
+
+    this.inputs.imageOT$.next(event);
+    return event;
   }
 
-  message(msg) {
-    $(this.MSG_SELECTOR).text(this.input.name + ': ' + msg);
+  processImgEvent(event) {
+    this.logger.info('Image event received');
+    let ID = this.inputs.id + '_KONVA_CONTAINER';
+    $(this.VIEW.nativeElement).find('.pluginarea').attr('id', ID);
+
+    let URL = 'http://localhost:8080/image/' + event.img.id;
+
+    this.message('creating canvas');
+    KonvaCanvasService.create(ID, URL)
+      .do(() => this.message('making service call'))
+      .switchMap(canvas => {
+        if (!this.inputs.ocr) {
+          return Rx.Observable.of({canvas, words: []});
+        }
+        let res$ = this.inputs.ocr
+          .process(event.img.id)
+          .map(words => Object.assign({}, {words, canvas}))
+          .catch(error => {
+            this.message('Service call failed');
+            return Rx.Observable.empty();
+          });
+        return res$;
+      })
+      .do(() => this.message('preparing canvas'))
+      .do(data => KonvaCanvasService.setWords(data.canvas, data.words))
+      .do(this.showCanvasDIV.bind(this))
+      .do(data => this.canvas = data.canvas)
+      .subscribe();
+  }
+
+  showCanvasDIV() {
+    $(this.VIEW.nativeElement).find('.pluginarea').removeClass('hide');
+    $(this.VIEW.nativeElement).find('.message-container').addClass('hide');
+
+    $(this.VIEW.nativeElement).addClass('overflow-scroll');
+  }
+
+  publishScrollEvent(scroll) {
+    let event = {id: this.inputs.id, scroll};
+    // this.logger.debug('publishing SCROLL Event: ' + JSON.stringify(event));
+    this.inputs.scrollOT$.next(event);
+    return event;
+  }
+
+  processScrollEvent(event) {
+    // this.logger.debug('SCROLL Event received: ' + JSON.stringify(event));
+    let scroll = event.scroll;
+    $(this.ZONE_SELECTOR)
+      .scrollTop(scroll.scrollTop)
+      .scrollLeft(scroll.scrollLeft);
+  }
+
+  publishZoomEvent(zoom) {
+    let event = {id: this.inputs.id, zoom};
+    // this.logger.debug('publishing ZOOM Event: ' + JSON.stringify(event));
+    this.inputs.zoomOT$.next(event);
+    return event;
+  }
+
+  processZoomEvent(event) {
+    this.logger.debug('ZOOM Event received: ' + JSON.stringify(event));
+
+    if (!this.canvas) {
+      return;
+    }
+    if (event.zoom > 1) {
+      this.logger.info('cannon zoom more then 100%');
+      return;
+    }
+
+    KonvaCanvasService.zoom(this.canvas, event.zoom);
+
+    let width = KonvaCanvasService.getWidth(this.canvas);
+    let height = KonvaCanvasService.getHeight(this.canvas);
+    width = KonvaCanvasService.scaleFor(event.zoom, width);
+    height = KonvaCanvasService.scaleFor(event.zoom, height);
+
+    $(this.CANVAS_SELECTOR)
+      .width(width)
+      .height(height);
   }
 }

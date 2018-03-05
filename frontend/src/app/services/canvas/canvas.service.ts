@@ -1,4 +1,4 @@
-import {Word} from './OCRService';
+import {Word} from '../ocr/OCRService';
 
 export interface CanvasService {
   create(SELECTOR, URL);

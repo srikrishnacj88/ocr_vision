@@ -3,25 +3,22 @@ import {NgModule} from '@angular/core';
 
 
 import {AppComponent} from './app.component';
-import {AppUtilService} from './app-util.service';
-import {OcrCanvasComponent} from './ocr-canvas/ocr-canvas.component';
-import {LoggerService} from './logger.service';
 import {OcrComponent} from './ocr/ocr.component';
-import {MicrosoftService} from './services/microsoft.service';
-import {GoogleService} from './services/google.service';
-import {AbbyyService} from './services/abbyy.service';
+import {MicrosoftService} from './services/ocr/microsoft.service';
+import {GoogleService} from './services/ocr/google.service';
+import {AbbyyService} from './services/ocr/abbyy.service';
+import {UploadService} from './services/upload.service';
 
 
 @NgModule({
   declarations: [
     AppComponent,
-    OcrCanvasComponent,
     OcrComponent
   ],
   imports: [
     BrowserModule
   ],
-  providers: [MicrosoftService, GoogleService, AbbyyService],
+  providers: [MicrosoftService, GoogleService, AbbyyService, UploadService],
   bootstrap: [AppComponent]
 })
 export class AppModule {

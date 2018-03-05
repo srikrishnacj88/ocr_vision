@@ -6,7 +6,12 @@ declare var $;
 @Injectable()
 export class AppUtilService {
 
-  static SERVER_BASE = 'http://localhost:8080/';
+  static SERVER_BASE = '/';
+
+  static ID() {
+    let ID = (Math.random() * 10000) + 'ID';
+    return ID.replace('.', '');
+  }
 
   static fromDropGetImages(selector) {
     function getFiles(event) {
@@ -134,9 +139,10 @@ export class AppUtilService {
     $helper.css('background-color', 'yellowgreen');
     $(document.body).append($helper);
 
-    if (text === 'NAME') {
-      console.log();
-    }
+    // if (text === '2303') {
+    //   debugger;
+    //   console.log();
+    // }
 
     let safeSize = $helper.css('font-size').replace('px', '');
     safeSize = parseInt(safeSize);

@@ -14,13 +14,11 @@ export class GoogleService implements OCRService {
     let res$ = Rx.Observable
       .ajax(this.URL + id)
       .pluck('response')
-      .do(console.log)
       .flatMap(response => Rx.Observable.from(response['pages_']))
       .flatMap(pages => pages['blocks_'])
       .flatMap(blocks => blocks['paragraphs_'])
       .flatMap(paragraphs => paragraphs['words_'])
       .map(this.wordToOCRWord.bind(this))
-      .do(null, (error) => console.log(error))
       .toArray();
     return res$;
   }
