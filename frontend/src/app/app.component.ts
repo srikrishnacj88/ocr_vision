@@ -25,20 +25,20 @@ export class AppComponent implements OnInit {
   ngOnInit(): void {
     this.logger = LoggerService.getLogger('AppComponent');
 
-    let service: any = this.createOCRService('OCR_PLAYER_1');
+    let service: any = this.createOCRService('OCR_PLAYER_1', 'PREVIEW');
     this.ocrService.push(service);
 
-    service = this.createOCRService('OCR_PLAYER_2');
-    service.ocr = this.microsoftService;
+    service = this.createOCRService('OCR_PLAYER_2', 'MICROSOFT');
+    // service.ocr = this.microsoftService;
     this.ocrService.push(service);
 
-    service = this.createOCRService('OCR_PLAYER_3');
-    service.ocr = this.googleService;
-    this.ocrService.push(service);
+    // service = this.createOCRService('OCR_PLAYER_3', "GOOGLE");
+    // service.ocr = this.googleService;
+    // this.ocrService.push(service);
 
-    service = this.createOCRService('OCR_PLAYER_4');
-    service.ocr = this.abbyyService;
-    this.ocrService.push(service);
+    // service = this.createOCRService('OCR_PLAYER_4',"ABBYY");
+    // service.ocr = this.abbyyService;
+    // this.ocrService.push(service);
 
     this.ocrService.forEach((service) => {
       service.imageOT$.subscribe(this.onImage.bind(this));
@@ -47,9 +47,9 @@ export class AppComponent implements OnInit {
     });
   }
 
-  private createOCRService(id) {
+  private createOCRService(id, name) {
     return {
-      id: id,
+      id, name,
       imageIN$: new Rx.Subject(),
       imageOT$: new Rx.Subject(),
       scrollIN$: new Rx.Subject(),

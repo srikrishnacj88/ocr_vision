@@ -75,18 +75,27 @@ export class AppUtilService {
     });
   }
 
-  static fileToImgObj(file) {
+  static fileToImgObj(id) {
+    // debugger
     return Rx.Observable.create(observer => {
       var img = new Image();
-      var reader = new FileReader();
-      reader.onload = (event) => {
-        img.src = event.target['result'];
-        img.onload = () => {
-          observer.next(img);
-          observer.complete();
-        };
+
+      img.onload = function () {
+        observer.next(img);
+        observer.complete();
       };
-      reader.readAsDataURL(file);
+
+      img.src = 'http://localhost:8080/image/' + id;
+
+      // var reader = new FileReader();
+      // reader.onload = (event) => {
+      //   img.src = event.target['result'];
+      //   img.onload = () => {
+      //     observer.next(img);
+      //     observer.complete();
+      //   };
+      // };
+      // reader.readAsDataURL(file);
       return img;
     });
   }
@@ -141,9 +150,9 @@ export class AppUtilService {
     $helper.css('background-color', 'yellowgreen');
     $(document.body).append($helper);
 
-    // if (text.toUpperCase() === 'CRORE') {
-    //   console.log();
-    // }
+    if (text === 'NAME') {
+      console.log();
+    }
 
     let safeSize = $helper.css('font-size').replace('px', '');
     safeSize = parseInt(safeSize);

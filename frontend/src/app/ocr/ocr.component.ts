@@ -38,12 +38,14 @@ export class OcrComponent {
     this.ZONE_CONTAINER_SELECTOR = '#' + this.input.id + ' .zone-container';
     this.CANVAS_SELECTOR = '#' + this.input.id + ' app-ocr-canvas';
 
+    this.message('Drop your images here');
+
     AppUtilService
       .fromDropGetImages('#' + this.input.id)
       .observeOn(Rx.Scheduler.async)
       .switchMap(this.uploadFile.bind(this))
       .observeOn(Rx.Scheduler.async)
-      .switchMap(event => AppUtilService.fileToImgObj.call(AppUtilService, event.file).map(img => Object.assign(event, {img})))
+      .switchMap(event => AppUtilService.fileToImgObj.call(AppUtilService, event.id).map(img => Object.assign(event, {img})))
       .observeOn(Rx.Scheduler.async)
       .map(this.publishImageEvent.bind(this))
       .observeOn(Rx.Scheduler.async)
@@ -81,15 +83,23 @@ export class OcrComponent {
   }
 
   processImageEvent(event) {
-    this.toChild.imageToCanvas$.next(event);
-    this.showCanvasDOM();
     let service: OCRService = this.input.ocr;
     if (service) {
+      this.message('Calling service. Hang on');
       service
         .process(event.fileMap.id)
+        .catch(() => {
+          this.message('Service request failed');
+          return Rx.Observable.empty();
+        })
+        .do(() => this.showCanvasDOM())
+        .do(() => this.toChild.imageToCanvas$.next(event))
         .subscribe((words: Array<Word>) => {
           this.toChild.words$.next(words);
         });
+    } else {
+      this.toChild.imageToCanvas$.next(event);
+      this.showCanvasDOM();
     }
   }
 
@@ -106,7 +116,6 @@ export class OcrComponent {
     const width = $konva.width() * event.zoom;
     const height = $konva.height() * event.zoom;
 
-    console.log($(this.CANVAS_SELECTOR));
     $(this.CANVAS_SELECTOR)
       .width(width)
       .height(height);
@@ -137,7 +146,7 @@ export class OcrComponent {
   }
 
   uploadFile(file) {
-    $(this.MSG_SELECTOR).text('Uploading file');
+    this.message('Uploading your image');
     const formData = new FormData();
     formData.append('file', file);
     const request = new XMLHttpRequest();
@@ -157,9 +166,13 @@ export class OcrComponent {
       .map(id => Object.assign({}, {id, file}))
       .do((data: any) => $(this.MSG_SELECTOR).text('File ID: ' + (data.id.substr(0, 7)) + '...'))
       .catch(error => {
-        $(this.MSG_SELECTOR).text('Upload failed. see console for more');
-        console.log(error);
-        return Rx.Observable.throw(error);
+        if (error.response && error.response.message.indexOf('exceeds the configured maximum') !== -1) {
+          this.message('Image size must be less then 4MB');
+        } else {
+          this.message('Failed to upload you image.');
+          this.logger.error(error);
+        }
+        return Rx.Observable.empty();
       });
     return res$;
   }
@@ -170,69 +183,7 @@ export class OcrComponent {
     $(this.ZONE_CONTAINER_SELECTOR).addClass('overflow-scroll');
   }
 
-  // scaleCanvas(event) {
-  //   $(this.CANVAS_SELECTOR).find('.konvajs-content').css('transform', 'scale(' + event.zoom + ')');
-  // }
-  //
-  // scrollCanvas(event) {
-  //   $(this.ZONE_CONTAINER_SELECTOR)
-  //     .scrollTop(event.scrollTop)
-  //     .scrollLeft(event.scrollLeft);
-  // }
-  //
-  // resizeCanvasContainer(event) {
-  //   $(this.CANVAS_SELECTOR).width(event.container_size.width);
-  //   $(this.CANVAS_SELECTOR).height(event.container_size.height);
-  //   return event;
-  // }
-  //
-  // processOCR(input) {
-  //   $(this.MSG_SELECTOR).text('Calling Google. Hang on....');
-  //   return Rx.Observable
-  //     .ajax('http://localhost:8080/google/' + input.id)
-  //     .catch(error => {
-  //       $(this.MSG_SELECTOR).text('Google: OCR backend request failed.');
-  //       console.log(error);
-  //       return Rx.Observable.throw(error);
-  //     })
-  //     .pluck('response')
-  //     .do(console.log)
-  //     .flatMap(response => Rx.Observable.from(response['pages_']))
-  //     .flatMap(pages => pages['blocks_'])
-  //     .flatMap(blocks => blocks['paragraphs_'])
-  //     .flatMap(paragraphs => paragraphs['words_'])
-  //     .map(this.wordToOCRWord.bind(this))
-  //     .do(null, (error)=>console.log(error))
-  //     .toArray();
-  // }
-  //
-  // wordToOCRWord(word) {
-  //   let topLeftPoint = word['boundingBox_']['vertices_'][0];
-  //   let topRightPoint = word['boundingBox_']['vertices_'][1];
-  //   let bottomRightPoint = word['boundingBox_']['vertices_'][2];
-  //   let bottomLeftPoint = word['boundingBox_']['vertices_'][3];
-  //
-  //   // there is no confidence_ level for Java SDK
-  //   // let confidence = word.confidence_;
-  //   let confidence = -1;
-  //   let rect = {
-  //     top: topLeftPoint.x_,
-  //     left: topLeftPoint.y_,
-  //     width: topRightPoint.x_ - topLeftPoint.x_,
-  //     height: bottomLeftPoint.y_ - topLeftPoint.y_
-  //   };
-  //   let text = '';
-  //   Rx.Observable
-  //     .from(word.symbols_)
-  //     .pluck('text_')
-  //     .toArray()
-  //     .subscribe(arr => text = arr.join(''));
-  //
-  //   let box = {confidence, text, rect};
-  //   return box;
-  // }
-  //
-  // publishWord(word) {
-  //   this.words$.next(word);
-  // }
+  message(msg) {
+    $(this.MSG_SELECTOR).text(this.input.name + ': ' + msg);
+  }
 }

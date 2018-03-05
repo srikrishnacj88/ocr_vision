@@ -1,9 +1,0 @@
-import * as Logger from 'loglevel';
-import * as Prefixer from 'loglevel-plugin-prefix';
-
-
-export class LoggerFactory {
-  getLogger(name) {
-    return Logger.getLogger('OcrCanvasComponent');
-  }
-}

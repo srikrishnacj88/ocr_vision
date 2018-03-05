@@ -5,13 +5,19 @@ import in.sskrishna.ocr.impl.google.GoogleService;
 import in.sskrishna.ocr.impl.microsoft.MicrosoftService;
 import in.sskrishna.ocr.service.OCRService;
 import in.sskrishna.ocr.service.StorageService;
+import org.springframework.core.io.ByteArrayResource;
+import org.springframework.core.io.Resource;
 import org.springframework.http.HttpStatus;
+import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 
 import java.io.File;
 import java.io.IOException;
+import java.nio.file.Files;
+import java.nio.file.Path;
+import java.nio.file.Paths;
 
 @RestController
 @CrossOrigin
@@ -73,6 +79,23 @@ public class OCRCtrl {
             return new ResponseEntity<String>(response, HttpStatus.OK);
         } else {
             return new ResponseEntity<String>(HttpStatus.NOT_FOUND);
+        }
+    }
+
+    @GetMapping(path = "/image/{id}", produces = "application/json")
+    public ResponseEntity<Resource> image(@PathVariable("id") String id) throws Exception {
+        if (this.storageService.exists(id)) {
+            File file = this.storageService.get(id);
+
+            Path path = Paths.get(file.getAbsolutePath());
+            ByteArrayResource resource = new ByteArrayResource(Files.readAllBytes(path));
+
+            return ResponseEntity.ok()
+                    .contentLength(file.length())
+                    .contentType(MediaType.IMAGE_JPEG)
+                    .body(resource);
+        } else {
+            return new ResponseEntity<Resource>(HttpStatus.NOT_FOUND);
         }
     }
 }
