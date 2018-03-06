@@ -17,35 +17,49 @@ import java.io.File;
 import java.io.IOException;
 import java.net.URI;
 import java.net.URISyntaxException;
+import java.util.HashMap;
+import java.util.Map;
 
 @Service
 public class MicrosoftService implements OCRService {
     private CloseableHttpClient httpclient = HttpClients.createDefault();
+    private Map<String, String> responseCache = new HashMap<String, String>();
 
     @Override
-    public String readText(File file) throws IOException, URISyntaxException {
-        String URL = System.getenv("OCR_MICROSOFT_URL");
-        String KEY = System.getenv("OCR_MICROSOFT_KEY");
-        Assert.notNull(URL, "Microsoft Cloud OCR URL should not be empty");
-        Assert.notNull(KEY, "Microsoft Cloud Subscription key should not be empty");
-        System.out.println("Microsoft OCR: processing");
-        URIBuilder uriBuilder = new URIBuilder(URL);
-        uriBuilder.setParameter("language", "unk");
-        uriBuilder.setParameter("detectOrientation", "false");
+    public String readText(File file, String hash) throws IOException, URISyntaxException {
+        synchronized (hash) {
+            if (responseCache.containsKey(hash)) {
+                return this.responseCache.get(hash);
+            }
 
-        URI uri = uriBuilder.build();
-        HttpPost request = new HttpPost(uri);
 
-        // Request headers. Replace the example key below with your valid subscription key.
-        request.setHeader("Content-Type", "application/octet-stream");
-        request.setHeader("Ocp-Apim-Subscription-Key", KEY);
+            String URL = System.getenv("OCR_MICROSOFT_URL");
+            String KEY = System.getenv("OCR_MICROSOFT_KEY");
+            Assert.notNull(URL, "Microsoft Cloud OCR URL should not be empty");
+            Assert.notNull(KEY, "Microsoft Cloud Subscription key should not be empty");
+            System.out.println("Microsoft OCR: processing");
+            URIBuilder uriBuilder = new URIBuilder(URL);
+            uriBuilder.setParameter("language", "unk");
+            uriBuilder.setParameter("detectOrientation", "false");
 
-        FileEntity reqEntity = new FileEntity(file, ContentType.APPLICATION_OCTET_STREAM);
-        request.setEntity(reqEntity);
+            URI uri = uriBuilder.build();
+            HttpPost request = new HttpPost(uri);
 
-        HttpResponse response = httpclient.execute(request);
-        HttpEntity entity = response.getEntity();
-        System.out.println("Microsoft OCR: finished");
-        return EntityUtils.toString(entity);
+            // Request headers. Replace the example key below with your valid subscription key.
+            request.setHeader("Content-Type", "application/octet-stream");
+            request.setHeader("Ocp-Apim-Subscription-Key", KEY);
+
+            FileEntity reqEntity = new FileEntity(file, ContentType.APPLICATION_OCTET_STREAM);
+            request.setEntity(reqEntity);
+
+            HttpResponse response = httpclient.execute(request);
+            HttpEntity entity = response.getEntity();
+            System.out.println("Microsoft OCR: finished");
+
+
+            String responseToCache = EntityUtils.toString(entity);
+            this.responseCache.put(hash, responseToCache);
+            return responseToCache;
+        }
     }
 }

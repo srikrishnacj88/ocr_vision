@@ -1,5 +1,6 @@
 package in.sskrishna.ocr.impl.storage;
 
+import in.sskrishna.ocr.util.Hash;
 import org.apache.commons.io.FileUtils;
 import in.sskrishna.ocr.service.StorageService;
 import org.springframework.stereotype.Service;
@@ -16,13 +17,13 @@ public class FSStorageService implements StorageService {
 
     @Override
     public String store(MultipartFile file) throws IOException {
-        String UUID = java.util.UUID.randomUUID().toString().replaceAll("-","");
         File temp = File.createTempFile("ocr", "vision");
         System.out.println(temp.getAbsoluteFile());
         temp.deleteOnExit();
         FileUtils.copyInputStreamToFile(file.getInputStream(), temp);
-        this.fileMap.put(UUID, temp);
-        return UUID;
+        String hash = Hash.md5(temp);
+        this.fileMap.put(hash, temp);
+        return hash;
     }
 
     @Override

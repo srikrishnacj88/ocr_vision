@@ -7,7 +7,7 @@ import {from} from 'rxjs/observable/from';
 import * as Rx from 'rxjs';
 
 @Injectable()
-export class AbbyyService implements OCRService {
+export class AbbyyCharService implements OCRService {
   private URL = AppUtilService.SERVER_BASE + 'abbyy/';
   private logger = LoggerService.getLogger('AbbyyService');
 
@@ -22,6 +22,10 @@ export class AbbyyService implements OCRService {
       .flatMap(chars => from(chars))
       .filter(obj => 'content' in obj)
       .map(this.wordToOCRWord.bind(this))
+      .catch(error => {
+        console.log(error);
+        return Rx.Observable.empty();
+      })
       .toArray();
     return res$;
   }
@@ -39,6 +43,12 @@ export class AbbyyService implements OCRService {
       width: word.b - word.t,
       height: word.r - word.l
     };
+
+    if (!rect.width || !rect.height) {
+      this.logger.warn('SKIPPING char or line to avoid browser freeze.Unable to calculate width & height: ' + JSON.stringify(word));
+      // this.logger.warn(word);
+      return null;
+    }
     let text = word.content;
 
     let box = {confidence, text, rect};

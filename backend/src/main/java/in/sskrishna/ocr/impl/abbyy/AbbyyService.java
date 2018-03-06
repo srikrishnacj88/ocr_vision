@@ -21,20 +21,32 @@ import java.io.File;
 import java.io.IOException;
 import java.net.URI;
 import java.net.URISyntaxException;
+import java.util.HashMap;
+import java.util.Map;
 
 @Service
 public class AbbyyService implements OCRService {
     private CloseableHttpClient httpclient = HttpClients.createDefault();
+    private Map<String, String> responseCache = new HashMap<String, String>();
 
     @Override
-    public String readText(File file) throws Exception {
-        String taskId = this.postImage(file);
-        String resultURL = "";
-        while (resultURL.equals("")) {
-            Thread.sleep(5000);
-            resultURL = this.isTaskFinished(taskId);
+    public String readText(File file, String hash) throws Exception {
+        synchronized (hash) {
+            if (responseCache.containsKey(hash)) {
+                return this.responseCache.get(hash);
+            }
+
+            String taskId = this.postImage(file);
+            String resultURL = "";
+            while (resultURL.equals("")) {
+                Thread.sleep(5000);
+                resultURL = this.isTaskFinished(taskId);
+            }
+
+            String response = this.getResult(resultURL);
+            this.responseCache.put(hash, response);
+            return response;
         }
-        return this.getResult(resultURL);
     }
 
     private String getResult(String resultURL) throws URISyntaxException, IOException {

@@ -6,9 +6,8 @@ declare var $;
 @Injectable()
 export class AppUtilService {
 
-  static SERVER_BASE = '/';
-
-  // static SERVER_BASE = 'http://localhost:8080/';
+  // static SERVER_BASE = '/';
+  static SERVER_BASE = 'http://localhost:8080/';
 
   static ID() {
     let ID = (Math.random() * 10000) + 'ID';
@@ -148,6 +147,8 @@ export class AppUtilService {
 
     let safeSize = $helper.css('font-size').replace('px', '');
     safeSize = parseInt(safeSize);
+    safeSize = safeSize < 8? 8 : safeSize;
+    safeSize = parseInt(safeSize);
     safeSize = AppUtilService.recursiveSearch(safeSize, (value) => {
       $helper.children('span').css('font-size', value + 'px');
       let isHeightOverflow = $helper[0].scrollHeight > $helper.innerHeight();
@@ -180,7 +181,6 @@ export class AppUtilService {
       return (width - .1);
     };
   }());
-
 
   private static recursiveSearch(init, callback) {
     let counter = init;

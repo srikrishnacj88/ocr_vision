@@ -36,6 +36,7 @@ export class KonvaCanvasService {
       return;
     }
     Rx.Observable.from(words)
+      .filter(word => !!word)
       .map(word => Object.assign({}, {canvas, word}))
       .do(KonvaCanvasService.renderWordBG)
       .do(KonvaCanvasService.renderWordText)
@@ -102,6 +103,9 @@ export class KonvaCanvasService {
   }
 
   private static renderWordBG(data) {
+    // console.log('renderWordBG');
+    // console.log(JSON.stringify(data.word));
+
     let word = data.word;
     let color = '154,205,50';
     if (word.confidence == -1) {
@@ -118,10 +122,18 @@ export class KonvaCanvasService {
       fill,
     });
     data.canvas.rectLayer.add(canvasBox);
+    // data.canvas.rectLayer.draw();
   }
 
   private static renderWordText(data) {
+    // console.log('renderWordText');
+    // console.log(JSON.stringify(data.word));
+
+    // debugger
     let word = data.word;
+    word.text = word.text + '';
+    word.text = KonvaCanvasService.trimTrallingDot(word.text);
+
     let fontSize = AppUtilService.calFontSize(word.text, word.rect.width, word.rect.height);
     fontSize = KonvaCanvasService.scale(fontSize);
     var canvasText = new Konva.Text({
@@ -133,6 +145,7 @@ export class KonvaCanvasService {
       fill: 'black'
     });
     data.canvas.wordLayer.add(canvasText);
+    // data.canvas.wordLayer.draw();
   }
 
   private static scale(number) {
@@ -145,7 +158,6 @@ export class KonvaCanvasService {
 
   static zoom(canvas, zoom) {
     if (zoom > 1) {
-      console.log(canvas);
       $(canvas.stage.getContainer()).css('transform', 'scale(' + zoom + ')');
       $(canvas.stage.getContainer()).css('transform-origin', 'top left');
     } else {
@@ -162,5 +174,17 @@ export class KonvaCanvasService {
 
   static getHeight(canvas) {
     return canvas.stage.getHeight();
+  }
+
+  static trimTrallingDot(text) {
+    return text;
+
+    // let isDotEnding = text.charAt(text.length - 1) === '.';
+    // if (isDotEnding) {
+    //   text = text.substr(0, text.length - 1);
+    //   return KonvaCanvasService.trimTrallingDot(text) + '$';
+    // } else {
+    //   return text;
+    // }
   }
 }

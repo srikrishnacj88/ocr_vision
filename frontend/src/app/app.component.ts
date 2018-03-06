@@ -3,8 +3,9 @@ import * as Rx from 'rxjs/Rx';
 import {LoggerService} from './services/logger.service';
 import {MicrosoftService} from './services/ocr/microsoft.service';
 import {GoogleService} from './services/ocr/google.service';
-import {AbbyyService} from './services/ocr/abbyy.service';
+import {AbbyyLineService} from './services/ocr/abbyy.line.service';
 import {AppUtilService} from './services/app-util.service';
+import {AbbyyCharService} from './services/ocr/abbyy.char.service';
 
 declare var $;
 
@@ -19,7 +20,8 @@ export class AppComponent implements OnInit {
 
   constructor(private microsoftService: MicrosoftService,
               private googleService: GoogleService,
-              private abbyyService: AbbyyService) {
+              private abbyyLineService: AbbyyLineService,
+              private abbyyCharService: AbbyyCharService) {
   }
 
   ngOnInit(): void {
@@ -28,7 +30,7 @@ export class AppComponent implements OnInit {
     let service: any = this.createOCRService('OCR_PLAYER_1', 'PREVIEW');
     this.ocrService.push(service);
 
-    service = this.createOCRService('OCR_PLAYER_3', "GOOGLE");
+    service = this.createOCRService('OCR_PLAYER_3', 'GOOGLE');
     service.ocr = this.googleService;
     this.ocrService.push(service);
 
@@ -36,9 +38,14 @@ export class AppComponent implements OnInit {
     service.ocr = this.microsoftService;
     this.ocrService.push(service);
 
-    service = this.createOCRService('OCR_PLAYER_4',"ABBYY");
-    service.ocr = this.abbyyService;
+    service = this.createOCRService('OCR_PLAYER_4', 'ABBYY_LINE');
+    service.ocr = this.abbyyLineService;
     this.ocrService.push(service);
+
+    service = this.createOCRService('OCR_PLAYER_5', 'ABBYY_CHAR');
+    service.ocr = this.abbyyCharService;
+    this.ocrService.push(service);
+
 
     this.ocrService.forEach((service) => {
       service.imageOT$.subscribe(this.onImage.bind(this));
@@ -46,8 +53,8 @@ export class AppComponent implements OnInit {
       service.zoomOT$.subscribe(this.onZoom.bind(this));
     });
 
-    AppUtilService.fromDropGetImages("body").subscribe();
-    AppUtilService.fromEventZoom("body").subscribe();
+    AppUtilService.fromDropGetImages('body').subscribe();
+    AppUtilService.fromEventZoom('body').subscribe();
   }
 
   private createOCRService(id, name) {
@@ -94,6 +101,6 @@ export class AppComponent implements OnInit {
 
   toggleService(service, $event) {
     $('#' + service.id).toggleClass('hide');
-    $($event.target).toggleClass("active");
+    $($event.target).toggleClass('active');
   }
 }

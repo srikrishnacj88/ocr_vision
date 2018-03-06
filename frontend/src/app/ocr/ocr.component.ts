@@ -160,15 +160,14 @@ export class OcrComponent {
       })
       .do(() => this.message('preparing canvas'))
       .do(data => KonvaCanvasService.setWords(data.canvas, data.words))
-      .do(this.showCanvasDIV.bind(this))
       .do(data => this.canvas = data.canvas)
+      .do(this.showCanvasDIV.bind(this))
       .subscribe();
   }
 
   showCanvasDIV() {
     $(this.VIEW.nativeElement).find('.pluginarea').removeClass('hide');
     $(this.VIEW.nativeElement).find('.message-container').addClass('hide');
-
     $(this.VIEW.nativeElement).addClass('overflow-scroll');
   }
 

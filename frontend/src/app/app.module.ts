@@ -6,7 +6,8 @@ import {AppComponent} from './app.component';
 import {OcrComponent} from './ocr/ocr.component';
 import {MicrosoftService} from './services/ocr/microsoft.service';
 import {GoogleService} from './services/ocr/google.service';
-import {AbbyyService} from './services/ocr/abbyy.service';
+import {AbbyyLineService} from './services/ocr/abbyy.line.service';
+import {AbbyyCharService} from './services/ocr/abbyy.char.service';
 import {UploadService} from './services/upload.service';
 
 
@@ -18,7 +19,7 @@ import {UploadService} from './services/upload.service';
   imports: [
     BrowserModule
   ],
-  providers: [MicrosoftService, GoogleService, AbbyyService, UploadService],
+  providers: [MicrosoftService, GoogleService, AbbyyLineService, AbbyyCharService, UploadService],
   bootstrap: [AppComponent]
 })
 export class AppModule {

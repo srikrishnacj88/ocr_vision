@@ -75,7 +75,7 @@ public class OCRCtrl {
     private ResponseEntity<String> service(String id, OCRService service) throws Exception {
         if (this.storageService.exists(id)) {
             File file = this.storageService.get(id);
-            String response = service.readText(file);
+            String response = service.readText(file, id);
             return new ResponseEntity<String>(response, HttpStatus.OK);
         } else {
             return new ResponseEntity<String>(HttpStatus.NOT_FOUND);
