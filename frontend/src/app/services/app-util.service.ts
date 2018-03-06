@@ -6,7 +6,9 @@ declare var $;
 @Injectable()
 export class AppUtilService {
 
-  static SERVER_BASE = 'http://localhost:8080/';
+  static SERVER_BASE = '/';
+
+  // static SERVER_BASE = 'http://localhost:8080/';
 
   static ID() {
     let ID = (Math.random() * 10000) + 'ID';
