@@ -91,4 +91,9 @@ export class AppComponent implements OnInit {
       service.zoomIN$.next(event);
     });
   }
+
+  toggleService(service, $event) {
+    $('#' + service.id).toggleClass('hide');
+    $($event.target).toggleClass("active");
+  }
 }
